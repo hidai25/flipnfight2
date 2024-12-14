@@ -1,0 +1,34 @@
+{
+    "name": "Contorols",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "697b4cd4-0890-4ce6-aab0-0a67fa30e425",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "70e79245-5a3e-43f2-bb29-c9de3243a63a",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "00a567b5-c203-4e0e-8345-9841519211f2",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
