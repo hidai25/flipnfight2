@@ -22,8 +22,9 @@ public class FightingController : MonoBehaviour
     private float lastDodgeTime; // Track last dodge time
 
     [Header("Health Settings")]
-    [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private float currentHealth;
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int currentHealth;
+    public HealthBar healthBar;
     [SerializeField] private string hitAnimationName = "GetHit";
     [SerializeField] private float hitAnimationDuration = 0.5f;
 
@@ -62,8 +63,13 @@ public class FightingController : MonoBehaviour
 
     public int Length { get; internal set; }
 
+ 
+
+
     private void Awake()
     {
+        currentHealth = maxHealth;
+        healthBar.GiveFullHealth(currentHealth);
         SetupComponents();
         SetupButtonListeners();
         characterController = GetComponent<CharacterController>();
@@ -75,6 +81,16 @@ public class FightingController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         mainCamera = Camera.main;
+        audioSource = GetComponent<AudioSource>();  // Add this line
+
+        // Add AudioSource if it doesn't exist
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;  // Prevent automatic playing
+            audioSource.spatialBlend = 1f;    // 3D sound
+            audioSource.volume = 1f;          // Full volume
+        }
 
         if (!characterController || !animator || !mainCamera)
         {
@@ -402,15 +418,25 @@ public class FightingController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        //play a random hit sound
-        //decrease health
+        // Play hit sound using the AudioSource component
+        if (hitSounds != null && hitSounds.Length > 0 && audioSource != null)
+        {
+            int randomIndex = Random.Range(0, hitSounds.Length);
+            audioSource.PlayOneShot(hitSounds[randomIndex]);
+            Debug.Log("Playing hit sound using AudioSource");
+        }
+        else
+        {
+            Debug.LogWarning("Missing audio source or hit sounds!");
+        }
+
         currentHealth -= takeDamage;
+        healthBar.SetHealth(currentHealth);
         if (currentHealth <= 0)
         {
             Die();
         }
         animator.Play("HitDamageAnimation");
-
     }
 
     void Die()

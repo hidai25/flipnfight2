@@ -42,8 +42,9 @@ public class OpponentAI : MonoBehaviour
     public string[] attackAnimations = { "Attack1Animation", "Attack2Animation", "Attack3Animation", "Attack4Animation" };
 
     [Header("Health Settings")]
-    [SerializeField] private float maxHealth = 100f;
-    private float currentHealth;
+    [SerializeField] private int maxHealth = 100;
+    public int currentHealth;
+    public HealthBar healthBar;
 
     [Header("Animation Settings")]
     [SerializeField] private string hitAnimationName = "HitDamageAnimation";
@@ -102,7 +103,11 @@ public class OpponentAI : MonoBehaviour
 
     void Awake()
     {
+        currentHealth = maxHealth;
+        healthBar.GiveFullHealth(currentHealth);
         createRandomNumber();
+
+
     }
 
     private void Update()
@@ -352,7 +357,7 @@ public class OpponentAI : MonoBehaviour
 
 
 
-    public IEnumerator PlayHitDamageAnimation(int takedamage)
+    public IEnumerator PlayHitDamageAnimation(int takeDamage)
     {
         Debug.Log($"[{gameObject.name}] PlayHitDamageAnimation started");
 
@@ -378,6 +383,8 @@ public class OpponentAI : MonoBehaviour
         // Stop any current movement animation
         animator.SetBool("Walking", false);
 
+        currentHealth -= takeDamage;
+        healthBar.SetHealth(currentHealth);
         Debug.Log($"[{gameObject.name}] Playing hitDamageAnimation");
         // Play the hit damage animation
         animator.Play(hitAnimationName, 0, 0);  // Force animation to start from beginning
